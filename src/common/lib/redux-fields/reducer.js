@@ -1,20 +1,19 @@
-/* @flow weak */
+// @flow
 import * as actions from './actions';
-import R from 'ramda';
+import { assocPath, dissocPath } from 'ramda';
 
 const initialState = {};
 
-const fieldsReducer = (state = initialState, action) => {
+const fieldsReducer = (state: Object = initialState, action: any) => {
   switch (action.type) {
-
     case actions.FIELDS_RESET_FIELDS: {
       const { path } = action.payload;
-      return R.dissocPath(path, state);
+      return dissocPath(path, state);
     }
 
     case actions.FIELDS_SET_FIELD: {
       const { path, value } = action.payload;
-      return R.assocPath(path, value, state);
+      return assocPath(path, value, state);
     }
 
     default:

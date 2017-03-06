@@ -1,16 +1,17 @@
-/* @flow */
+// @flow
 import React from 'react';
 import linksMessages from '../../common/app/linksMessages';
-import { Block, Title, View } from '../app/components';
+import { Box, Paragraph } from '../../common/components';
 import { FormattedMessage } from 'react-intl';
+import { Title } from '../components';
 
 const SettingsPage = () => (
-  <View>
+  <Box>
     <Title message={linksMessages.settings} />
-    <Block>
-      <FormattedMessage {...linksMessages.settings} />
-    </Block>
-  </View>
+    <FormattedMessage {...linksMessages.settings}>
+      {message => <Paragraph>{message}</Paragraph>}
+    </FormattedMessage>
+  </Box>
 );
 
 export default SettingsPage;

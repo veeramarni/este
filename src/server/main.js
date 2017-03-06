@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import config from './config';
 import errorHandler from './lib/errorHandler';
 import express from 'express';
@@ -6,7 +6,6 @@ import frontend from './frontend';
 
 const app = express();
 
-// $FlowFixMe
 app.use(frontend);
 app.get('*', errorHandler);
 

@@ -1,7 +1,8 @@
-/* @flow */
+// @flow
 import type { Action, Deps } from '../types';
+import isReactNative from '../../common/app/isReactNative';
+import { Actions as FarceActions } from 'farce';
 import { Observable } from 'rxjs/Observable';
-import { REHYDRATE } from 'redux-persist/constants';
 import { onAuth, signInDone, signInFail } from '../auth/actions';
 
 export const appError = (error: Object): Action => ({
@@ -19,34 +20,20 @@ export const appShowMenu = (menuShown: boolean): Action => ({
   payload: { menuShown },
 });
 
-// Called on componentDidMount aka only at the client (browser or native).
-export const appStart = (): Action => ({
-  type: 'APP_START',
+export const toggleBaseline = (): Action => ({
+  type: 'TOGGLE_BASELINE',
 });
 
-export const appStarted = (): Action => ({
-  type: 'APP_STARTED',
+export const setTheme = (theme: string): Action => ({
+  type: 'SET_THEME',
+  payload: { theme },
 });
 
-export const appStop = (): Action => ({
-  type: 'APP_STOP',
-});
-
-export const appStorageLoaded = (state: Object): Action => ({
-  type: 'APP_STORAGE_LOADED',
-  payload: { state },
-});
-
-// TODO: Observable type.
-const appStartEpic = (action$: any) =>
-  action$.ofType(REHYDRATE)
-    .map(appStarted);
-
-const appStartedFirebaseEpic = (action$: any, deps: Deps) => {
+const appStartedEpic = (action$: any, deps: Deps) => {
   const { firebase, firebaseAuth, getState } = deps;
 
-  const appOnline$ = Observable.create((observer) => {
-    const onValue = (snap) => {
+  const appOnline$ = Observable.create(observer => {
+    const onValue = snap => {
       const online = snap.val();
       if (online === getState().app.online) return;
       observer.next(appOnline(online));
@@ -57,22 +44,32 @@ const appStartedFirebaseEpic = (action$: any, deps: Deps) => {
     };
   });
 
+  const maybeUpdatePathnameOnAuthChange = firebaseUser => {
+    const { pathname } = getState().found.match.location;
+    const isSignIn = firebaseUser && pathname === '/signin';
+    return FarceActions.replace(isSignIn ? '/' : pathname);
+  };
+
   // firebase.google.com/docs/reference/js/firebase.auth.Auth#onAuthStateChanged
-  const onAuth$ = Observable.create((observer) => {
-    const unsubscribe = firebaseAuth().onAuthStateChanged((firebaseUser) => {
+  const onAuth$ = Observable.create(observer => {
+    const unsubscribe = firebaseAuth().onAuthStateChanged(firebaseUser => {
       observer.next(onAuth(firebaseUser));
+      if (!isReactNative) {
+        observer.next(maybeUpdatePathnameOnAuthChange(firebaseUser));
+      }
     });
     return unsubscribe;
   });
 
-  const signInAfterRedirect$ = Observable.create((observer) => {
+  const signInAfterRedirect$ = Observable.create(observer => {
     let unsubscribed = false;
-    firebaseAuth().getRedirectResult()
+    firebaseAuth()
+      .getRedirectResult()
       .then(({ user: firebaseUser }) => {
         if (unsubscribed || !firebaseUser) return;
         observer.next(signInDone(firebaseUser));
       })
-      .catch((error) => {
+      .catch(error => {
         if (unsubscribed) return;
         observer.error(signInFail(error));
       });
@@ -81,10 +78,7 @@ const appStartedFirebaseEpic = (action$: any, deps: Deps) => {
     };
   });
 
-  const streams = [
-    appOnline$,
-    onAuth$,
-  ];
+  const streams: Array<any> = [appOnline$, onAuth$];
 
   if (process.env.IS_BROWSER) {
     streams.push(signInAfterRedirect$);
@@ -92,16 +86,7 @@ const appStartedFirebaseEpic = (action$: any, deps: Deps) => {
 
   return action$
     .filter((action: Action) => action.type === 'APP_STARTED')
-    .mergeMap(() => Observable
-      .merge(...streams)
-      // takeUntil unsubscribes all merged streams on APP_STOP.
-      .takeUntil(
-        action$.filter((action: Action) => action.type === 'APP_STOP'),
-      ),
-    );
+    .mergeMap(() => Observable.merge(...streams));
 };
 
-export const epics = [
-  appStartEpic,
-  appStartedFirebaseEpic,
-];
+export const epics = [appStartedEpic];

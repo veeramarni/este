@@ -1,20 +1,16 @@
-/* @flow */
+// @flow
 import OnlineUsers from './OnlineUsers';
 import React from 'react';
 import linksMessages from '../../common/app/linksMessages';
-import { Block, PageHeader, Title, View } from '../app/components';
+import { Box, PageHeader } from '../../common/components';
+import { Title } from '../components';
 
 const UsersPage = () => (
-  <View>
+  <Box>
     <Title message={linksMessages.users} />
-    <PageHeader
-      description="Online users."
-      heading="Users"
-    />
-    <Block>
-      <OnlineUsers />
-    </Block>
-  </View>
+    <PageHeader heading="Users" description="Online users." />
+    <OnlineUsers />
+  </Box>
 );
 
 export default UsersPage;

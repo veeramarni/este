@@ -1,17 +1,16 @@
-/* @flow */
+// @flow
 import type { Action, AppState } from '../types';
 
 const initialState = {
+  baselineShown: false,
+  currentTheme: 'defaultTheme',
   error: null,
   menuShown: false,
   online: false,
   started: false,
 };
 
-const reducer = (
-  state: AppState = initialState,
-  action: Action,
-): AppState => {
+const reducer = (state: AppState = initialState, action: Action): AppState => {
   // Map all app errors into state.app.error.
   // In React Native, we show errors in one nicely animated unobtrusive alert.
   // In the browser, we prefer local error messages rendering.
@@ -22,7 +21,6 @@ const reducer = (
   }
 
   switch (action.type) {
-
     case 'APP_ERROR':
       return { ...state, error: action.payload.error };
 
@@ -34,6 +32,12 @@ const reducer = (
 
     case 'APP_STARTED':
       return { ...state, started: true };
+
+    case 'TOGGLE_BASELINE':
+      return { ...state, baselineShown: !state.baselineShown };
+
+    case 'SET_THEME':
+      return { ...state, currentTheme: action.payload.theme };
 
     default:
       return state;

@@ -1,14 +1,14 @@
-/* @flow weak */
-import R from 'ramda';
+// @flow
 import { createTransform } from 'redux-persist';
+import { pick } from 'ramda';
 
 // TODO: Add redux-persist-migrate.
 
 const paths = [
+  ['app', ['baselineShown', 'currentTheme']],
   ['fields'],
   ['intl', ['currentLocale']],
-  ['themes', ['currentTheme']],
-  ['users', ['online', 'viewer']],
+  ['users', ['viewer']],
 ];
 
 const transforms = [];
@@ -19,14 +19,13 @@ const whitelist = [];
 paths.forEach(([feature, props]) => {
   whitelist.push(feature);
   if (!props) return;
-  const inOut = state => R.pick(props, state);
+  const inOut = state => pick(props, state);
   transforms.push(createTransform(inOut, inOut, { whitelist: [feature] }));
 });
 
-const configureStorage = (appName, storage) => ({
+const configureStorage = (appName: string) => ({
   debounce: 100,
   keyPrefix: `${appName}:`,
-  storage,
   transforms,
   whitelist,
 });

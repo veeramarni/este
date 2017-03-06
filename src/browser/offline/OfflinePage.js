@@ -1,26 +1,21 @@
-/* @flow */
+// @flow
 import type { State } from '../../common/types';
 import React from 'react';
 import linksMessages from '../../common/app/linksMessages';
-import { PageHeader, Pre, Title, View } from '../app/components';
 import { connect } from 'react-redux';
+import { Box, PageHeader, Text } from '../../common/components';
+import { Title } from '../components';
 
-const OfflinePage = ({ online }) => (
-  <View>
+type OfflinePageProps = { online: boolean };
+
+const OfflinePage = ({ online }: OfflinePageProps) => (
+  <Box>
     <Title message={linksMessages.offline} />
     <PageHeader heading="Offline" />
-    <Pre>
-      state.app.online: {online.toString()}
-    </Pre>
-  </View>
+    <Text>state.app.online: {online.toString()}</Text>
+  </Box>
 );
 
-OfflinePage.propTypes = {
-  online: React.PropTypes.bool.isRequired,
-};
-
-export default connect(
-  (state: State) => ({
-    online: state.app.online,
-  }),
-)(OfflinePage);
+export default connect((state: State) => ({ online: state.app.online }))(
+  OfflinePage,
+);

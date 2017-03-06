@@ -49,10 +49,6 @@ export default [
     "defaultMessage": "You have unsaved changes. Are you sure?",
   },
   {
-    "id": "app.FieldError.required",
-    "defaultMessage": "{prop, select, description {Please enter a description.} email {Please enter an email address.} name {Please enter a name.} password {Please enter a password.} other {You can't leave this empty.}}",
-  },
-  {
     "id": "app.links.fields",
     "defaultMessage": "Fields",
   },
@@ -114,7 +110,7 @@ export default [
   },
   {
     "id": "auth.email.passwordRecoveryLegend",
-    "defaultMessage": "Email Password Recovery",
+    "defaultMessage": "Password Recovery",
   },
   {
     "id": "auth.email.recoveryEmailSent",

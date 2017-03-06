@@ -1,8 +1,8 @@
-/* @flow */
-import Locales from './SwitchLocale';
+// @flow
 import React from 'react';
+import SwitchLocale from './SwitchLocale';
 import linksMessages from '../../common/app/linksMessages';
-import { Block, PageHeader, Text, Title, View } from '../app/components';
+import { Box, PageHeader, Paragraph, Text } from '../../common/components';
 import {
   FormattedDate,
   FormattedMessage,
@@ -10,6 +10,7 @@ import {
   FormattedRelative,
   defineMessages,
 } from 'react-intl';
+import { Title } from '../components';
 
 const messages = defineMessages({
   unreadCount: {
@@ -22,37 +23,39 @@ const messages = defineMessages({
 });
 
 const IntlPage = () => {
-  const componentRenderedAt = Date.now();
+  const renderedAt = Date.now();
   const unreadCount = 123;
 
   return (
-    <View>
+    <Box>
       <Title message={linksMessages.intl} />
       <PageHeader heading="react-intl" />
-      <Locales />
-      <Block>
-        <Text>
-          <FormattedDate
-            value={Date.now()}
-            day="numeric"
-            month="long"
-            year="numeric"
-            formatMatcher="basic" // while this bug remains in react-intl: https://github.com/andyearnshaw/Intl.js/issues/179
-          />
-        </Text>
-        <Text>
-          <FormattedNumber value={unreadCount} /> {' '}
-          <FormattedMessage {...messages.unreadCount} values={{ unreadCount }} />
-        </Text>
-        <Text>
-          <FormattedRelative
-            initialNow={componentRenderedAt}
-            updateInterval={1000 * 1}
-            value={componentRenderedAt}
-          />
-        </Text>
-      </Block>
-    </View>
+      <SwitchLocale />
+      <Paragraph>
+        <FormattedDate
+          day="numeric"
+          month="short"
+          value={renderedAt}
+          year="numeric"
+        />
+      </Paragraph>
+      <Paragraph flexDirection="row">
+        <FormattedNumber value={unreadCount}>
+          {message => <Text>{message}</Text>}
+        </FormattedNumber>
+        &nbsp;
+        <FormattedMessage {...messages.unreadCount} values={{ unreadCount }}>
+          {message => <Text>{message}</Text>}
+        </FormattedMessage>
+      </Paragraph>
+      <Paragraph>
+        <FormattedRelative
+          initialNow={renderedAt}
+          updateInterval={1000 * 1}
+          value={renderedAt}
+        />
+      </Paragraph>
+    </Box>
   );
 };
 

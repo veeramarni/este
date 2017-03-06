@@ -15,20 +15,21 @@
 
 > Pokud máte zájem o školení JavaScript, React.js, nebo Este.js, podívejte se na [javascript-skoleni.cz](https://javascript-skoleni.cz/).
 
+> **Contact me, if you are looking for a technical cofounder.**
+
 ## Techniques
 
-- Universal architecture
+- universal architecture with immutable app state
   - code shared across platforms (browser, server, native mobile)
   - server side rendering or server-less pre-rendering to HTML files
   - universal internationalization
   - universal crash reporting
   - universal data fetching
   - universal forms with universal validation
-  - universal ftw
-- Immutable app state
-- Stateless functional UI components with JavaScript styles
-- Flowtype
-- Vanilla hot reloading makes everything hot reloadable
+  - [universal components with universal styles](https://medium.com/@steida/css-in-js-the-argument-refined-471c7eb83955)
+- stateless functional UI with dynamic typed styles
+- flowtype FTW
+- vanilla hot reloading makes everything hot reloadable
 - [Firebase](https://firebase.google.com/) integration ([este.firebaseapp.com](https://este.firebaseapp.com))
   - email and facebook login
   - declarative queryFirebase higher order component for Firebase imperative API
@@ -36,15 +37,16 @@
 
 ## Libraries
 
-- [redux](http://rackt.github.io/redux/)
+- [redux](http://reactjs.github.io/redux/)
 - [redux-observable](https://github.com/redux-observable/redux-observable)
+- [found](https://github.com/4Catalyzer/found)
 - [ramda](http://ramdajs.com/)
 - [react-intl](https://github.com/yahoo/react-intl)
 - [redux-persist](https://github.com/rt2zz/redux-persist)
 - [formatjs](http://formatjs.io/)
 - [jest](https://facebook.github.io/jest/) Painless JavaScript Testing.
 - [raven-js](https://github.com/getsentry/raven-js) Crash reporting client for [Sentry](https://getsentry.com).
-- [rebass](https://github.com/jxnblk/rebass) Configurable React Stateless Functional UI Components
+- [fela](https://github.com/rofrischmann/fela) Universal, Dynamic & High-Performance Styling in JavaScript
 - And much more. Explore the repository.
 
 ## Prerequisites
@@ -67,9 +69,9 @@ If you are using different node versions on your machine, use [nvm](https://gith
 
 ```shell
 git clone
-cd este-app
-npm install
-``` 
+cd este
+yarn (or npm install)
+```
 
 ## Start Development
 
@@ -101,8 +103,9 @@ React Native: [Getting Started](https://facebook.github.io/react-native/docs/get
 - `npm test` run all checks and tests
 - `node src/server` start app, remember to set NODE_ENV
 - `gulp to-html` render app to HTML for static hosting like [Firebase](https://www.firebase.com/features.html#features-hosting)
-- `gulp deploy-heroku` deploy [Heroku](https://www.heroku.com/) app
-- `gulp deploy-firebase` deploy [Firebase](https://firebase.google.com/) app
+- `gulp deploy-now` deploy to [Now](https://zeit.co/now/)
+- `gulp deploy-heroku` deploy to [Heroku](https://www.heroku.com/)
+- `gulp deploy-firebase` deploy to [Firebase](https://firebase.google.com/)
 - `gulp deploy-firebase-database` deploy Firebase database only
 
 ## Customize Este App

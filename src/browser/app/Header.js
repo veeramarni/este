@@ -1,64 +1,54 @@
-/* @flow */
-import type { State } from '../../common/types';
+// @flow
+import type { State, User } from '../../common/types';
 import React from 'react';
 import linksMessages from '../../common/app/linksMessages';
+import { Box } from '../../common/components';
 import { FormattedMessage } from 'react-intl';
-import { Link, Space, Toolbar } from '../app/components';
+import { Link } from '../components';
+import { compose } from 'ramda';
 import { connect } from 'react-redux';
 
-const styles = {
-  toolbar: {
-    flexWrap: 'wrap',
-  },
-  prefetch: {
-    display: 'none',
-  },
-};
-
-const Header = ({ viewer }) => (
-  <Toolbar style={styles.toolbar}>
-    <Link bold inverted exactly to="/">
-      <FormattedMessage {...linksMessages.home} />
-    </Link>
-    <Space x={2} />
-    <Link bold inverted to="/users">
-      <FormattedMessage {...linksMessages.users} />
-    </Link>
-    <Space x={2} />
-    <Link bold inverted to="/todos">
-      <FormattedMessage {...linksMessages.todos} />
-    </Link>
-    <Space x={2} />
-    <Link bold inverted to="/fields">
-      <FormattedMessage {...linksMessages.fields} />
-    </Link>
-    <Space x={2} />
-    <Link bold inverted to="/intl">
-      <FormattedMessage {...linksMessages.intl} />
-    </Link>
-    <Space x={2} />
-    <Link bold inverted to="/offline">
-      <FormattedMessage {...linksMessages.offline} />
-    </Link>
-    <Space x={2} />
-    <Link bold inverted to="/me">
-      <FormattedMessage {...linksMessages.me} />
-    </Link>
-    <Space x={2} />
-    {!viewer &&
-      <Link bold inverted to="/signin">
-        <FormattedMessage {...linksMessages.signIn} />
+const HeaderLink = ({ to, message, ...props }) => (
+  <FormattedMessage {...message}>
+    {message => (
+      <Link
+        backgroundColor="primary"
+        bold
+        color="white"
+        paddingHorizontal={0.5}
+        paddingVertical={0.5}
+        to={to}
+        {...props}
+      >
+        {message}
       </Link>
-    }
-  </Toolbar>
+    )}
+  </FormattedMessage>
 );
 
-Header.propTypes = {
-  viewer: React.PropTypes.object,
+type HeaderProps = {
+  viewer: ?User,
 };
 
-export default connect(
-  (state: State) => ({
-    viewer: state.users.viewer,
-  }),
+const Header = ({ viewer }: HeaderProps) => (
+  <Box
+    backgroundColor="primary"
+    flexWrap="wrap"
+    flexDirection="row"
+    marginVertical={0.5}
+    paddingHorizontal={0.5}
+  >
+    <HeaderLink exact to="/" message={linksMessages.home} />
+    <HeaderLink to="/users" message={linksMessages.users} />
+    <HeaderLink to="/todos" message={linksMessages.todos} />
+    <HeaderLink to="/fields" message={linksMessages.fields} />
+    <HeaderLink to="/intl" message={linksMessages.intl} />
+    <HeaderLink to="/offline" message={linksMessages.offline} />
+    <HeaderLink to="/me" message={linksMessages.me} />
+    {!viewer && <HeaderLink to="/signin" message={linksMessages.signIn} />}
+  </Box>
+);
+
+export default compose(
+  connect((state: State) => ({ viewer: state.users.viewer })),
 )(Header);

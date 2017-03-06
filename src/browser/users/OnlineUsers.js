@@ -1,78 +1,33 @@
-/* @flow */
-import type { State } from '../../common/types';
-import Gravatar from 'react-gravatar';
-import R from 'ramda';
+// @flow
+import type { State, User } from '../../common/types';
 import React from 'react';
-import { Image, Loading, Text, View } from '../app/components';
+import getUserPhotoUrl from '../../common/users/getUserPhotoUrl';
+import { Box, Image, Text } from '../../common/components';
 import { connect } from 'react-redux';
-import { firebase } from '../../common/lib/redux-firebase';
-import { onUsersPresence } from '../../common/users/actions';
 
-const styles = {
-  user: {
-    display: 'inline-block',
-  },
-  gravatar: {
-    borderRadius: '25%',
-    margin: '.5em',
-    maxHeight: 50,
-  },
+type OnlineUserProps = {
+  user: User,
 };
 
-const User = ({ user }) => (
-  <View style={styles.user}>
-    {user.photoURL ?
-      <Image
-        role="presentation"
-        src={user.photoURL}
-        style={styles.gravatar}
-        title={user.displayName}
-      />
-    :
-      <Gravatar
-        default="retro"
-        email={user.displayName} // For users signed in via email.
-        rating="x"
-        style={styles.gravatar}
-        title={user.displayName}
-      />
-    }
-  </View>
+const OnlineUser = ({ user }: OnlineUserProps) => (
+  <Image
+    marginHorizontal={0.25}
+    size={{ height: 50, width: 50 }}
+    src={getUserPhotoUrl(user)}
+    title={user.displayName}
+  />
 );
 
-User.propTypes = {
-  user: React.PropTypes.object.isRequired,
+type OnlineUsersProps = {
+  users: ?Array<User>,
 };
 
-const OnlineUsers = ({ users }) => (
-  <View>
-    { users === undefined ?
-      <Loading />
-    : users === null ?
-      <Text>No one is online.</Text>
-    :
-      users.map(user =>
-        <User key={user.id} user={user} />,
-      )
-    }
-  </View>
-);
+const OnlineUsers = ({ users }: OnlineUsersProps) => users == null
+  ? <Text>No one is online.</Text>
+  : <Box flexDirection="row" flexWrap="wrap" marginHorizontal={-0.25}>
+      {users.map(user => <OnlineUser key={user.id} user={user} />)}
+    </Box>;
 
-OnlineUsers.propTypes = {
-  users: React.PropTypes.array,
-};
-
-export default R.compose(
-  connect(
-    (state: State) => ({
-      users: state.users.online,
-    }),
-    { onUsersPresence },
-  ),
-  firebase((database, props) => {
-    const usersPresenceRef = database.child('users-presence');
-    return [
-      [usersPresenceRef, 'on', 'value', props.onUsersPresence],
-    ];
-  }),
-)(OnlineUsers);
+export default connect((state: State) => ({
+  users: state.users.online,
+}))(OnlineUsers);

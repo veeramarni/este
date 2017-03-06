@@ -1,12 +1,11 @@
-/* @flow */
+// @flow
 import type { Action, UsersState } from '../types';
-import R from 'ramda';
 import createUserFirebase from './createUserFirebase';
+import { compose, last, map, prop, sortBy, values } from 'ramda';
 
 const initialState = {
-  // Undefined is absence of evidence, null is evidence of absence.
-  online: undefined,
-  viewer: undefined,
+  online: null,
+  viewer: null,
 };
 
 const reducer = (
@@ -14,7 +13,6 @@ const reducer = (
   action: Action,
 ): UsersState => {
   switch (action.type) {
-
     case 'ON_AUTH': {
       const user = createUserFirebase(action.payload.firebaseUser);
       return { ...state, viewer: user };
@@ -25,19 +23,18 @@ const reducer = (
       if (!presence) {
         return { ...state, online: null };
       }
-      const sortBylastSeenAt = R.sortBy(R.prop('lastSeenAt'));
-      const online = R.compose(
-        R.map(item => item.user),
-        R.sortBy(sortBylastSeenAt),
-        R.values,
-        R.map(R.compose(R.last, sortBylastSeenAt, R.values)),
+      const sortBylastSeenAt = sortBy(prop('lastSeenAt'));
+      const online = compose(
+        map(item => item.user),
+        sortBy(sortBylastSeenAt),
+        values,
+        map(compose(last, sortBylastSeenAt, values)),
       )(presence);
       return { ...state, online };
     }
 
     default:
       return state;
-
   }
 };
 

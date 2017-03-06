@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import { defineMessages } from 'react-intl';
 
 const emailMessages = defineMessages({
@@ -7,7 +7,7 @@ const emailMessages = defineMessages({
     id: 'auth.email.emailLegend',
   },
   passwordRecoveryLegend: {
-    defaultMessage: 'Email Password Recovery',
+    defaultMessage: 'Password Recovery',
     id: 'auth.email.passwordRecoveryLegend',
   },
   emailPlaceholder: {

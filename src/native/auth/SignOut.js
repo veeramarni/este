@@ -1,34 +1,31 @@
-/* @flow */
+// @flow
 import React from 'react';
 import buttonsMessages from '../../common/app/buttonsMessages';
-import { Button, FormattedMessage } from '../app/components';
+import { Button } from '../../common/components';
+import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { signOut } from '../../common/auth/actions';
 
-// $FlowFixMe
-const SignOut = ({ signOut }, { router }) => {
-  const onClick = () => {
+type SignOutProps = { signOut: typeof signOut };
+type SignOutContext = { router: Object };
+
+const SignOut = ({ signOut }: SignOutProps, { router }: SignOutContext) => {
+  const onPress = () => {
     // We have to redirect to home before signOut.
     router.transitionTo({ pathname: '/' });
     // TODO: Router should provide onCompleted callback.
     setImmediate(signOut);
   };
   return (
-    <Button onPress={onClick}>
-      <FormattedMessage {...buttonsMessages.signOut} />
-    </Button>
+    <FormattedMessage {...buttonsMessages.signOut}>
+      {message => <Button danger onPress={onPress}>{message}</Button>}
+    </FormattedMessage>
   );
-};
-
-SignOut.propTypes = {
-  signOut: React.PropTypes.func.isRequired,
 };
 
 SignOut.contextTypes = {
   router: React.PropTypes.object,
 };
 
-export default connect(
-  null,
-  { signOut },
-)(SignOut);
+// $FlowFixMe SignOut Context does it.
+export default connect(null, { signOut })(SignOut);

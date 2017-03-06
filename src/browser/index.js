@@ -1,10 +1,9 @@
-/* @flow */
+// @flow
 /* eslint-disable react/require-extension */
 // Bootstrap environment
 
 const onWindowIntl = () => {
   require('babel-polyfill');
-  window.Promise = require('../common/configureBluebird');
 
   // App locales are defined in src/server/config.js
   const { addLocaleData } = require('react-intl');
@@ -22,7 +21,7 @@ const onWindowIntl = () => {
 };
 
 // github.com/andyearnshaw/Intl.js/#intljs-and-browserifywebpack
-if (!window.Intl) {
+if (!window.Intl && typeof require.ensure === 'function') {
   require.ensure([
     'intl',
     'intl/locale-data/jsonp/cs.js',

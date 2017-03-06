@@ -1,79 +1,61 @@
-/* @flow */
-import type { State } from '../../common/types';
-import Gravatar from 'react-gravatar';
+// @flow
+import type { State, User } from '../../common/types';
 import React from 'react';
 import SignOut from '../auth/SignOut';
+import getUserPhotoUrl from '../../common/users/getUserPhotoUrl';
 import linksMessages from '../../common/app/linksMessages';
-import { Block, Image, Link, Space, Text, Title, View } from '../app/components';
+import { Box, Image, Text } from '../../common/components';
 import { FormattedMessage } from 'react-intl';
-import { Match, Redirect } from 'react-router';
+import { Link, Title } from '../components';
+import { compose } from 'ramda';
 import { connect } from 'react-redux';
 
-// Pages
-import Profile from './ProfilePage';
-import Settings from './SettingsPage';
-
-const Navbar = ({ pathname }) => (
-  <Block>
-    <Link exactly to={pathname}>
-      <FormattedMessage {...linksMessages.me} />
-    </Link>
-    <Space x={2} />
-    <Link to={`${pathname}/profile`}>
-      <FormattedMessage {...linksMessages.profile} />
-    </Link>
-    <Space x={2} />
-    <Link to={`${pathname}/settings`}>
-      <FormattedMessage {...linksMessages.settings} />
-    </Link>
-  </Block>
+const HeaderLink = ({ message, ...props }) => (
+  <FormattedMessage {...message}>
+    {message => (
+      <Link paddingHorizontal={0.5} {...props}>
+        {message}
+      </Link>
+    )}
+  </FormattedMessage>
 );
 
-Navbar.propTypes = {
-  pathname: React.PropTypes.string.isRequired,
+const Header = () => (
+  <Box flexDirection="row" marginBottom={1} marginHorizontal={-0.5}>
+    <HeaderLink exact to="/me" message={linksMessages.me} />
+    <HeaderLink to="/me/profile" message={linksMessages.profile} />
+    <HeaderLink to="/me/settings" message={linksMessages.settings} />
+  </Box>
+);
+
+type MePageProps = {
+  children: any,
+  viewer: ?User,
 };
 
-const MePage = ({ pathname, viewer }) => (
-  !viewer ?
-    <Redirect to="/" />
-  :
-    <View>
+const MePage = ({ children, viewer }: MePageProps) => !viewer
+  ? null
+  : <Box>
       <Title message={linksMessages.me} />
-      <Navbar pathname={pathname} />
-      <Match
-        exactly
-        pattern={pathname}
-        render={() => (
-          <View>
-            <Text>{viewer.displayName}</Text>
-            <Block>
-              {viewer.photoURL ?
-                <Image role="presentation" src={viewer.photoURL} />
-              :
-                <Gravatar
-                  default="retro"
-                  email={viewer.email}
-                  rating="x"
-                  size={100}
-                />
-              }
-            </Block>
+      <Header />
+      {children ||
+        <Box>
+          <Text>{viewer.displayName}</Text>
+          <Box marginVertical={1}>
+            <Image
+              src={getUserPhotoUrl(viewer)}
+              size={{ height: 100, width: 100 }}
+              title={viewer.displayName}
+            />
+          </Box>
+          <Box flexDirection="row">
             <SignOut />
-          </View>
-        )}
-      />
-      <Match pattern={`${pathname}/profile`} component={Profile} />
-      <Match pattern={`${pathname}/settings`} component={Settings} />
-    </View>
-);
+          </Box>
+        </Box>}
+    </Box>;
 
-MePage.propTypes = {
-  pathname: React.PropTypes.string.isRequired,
-  viewer: React.PropTypes.object,
-};
-
-export default connect(
-  (state: State) => ({
+export default compose(
+  connect((state: State) => ({
     viewer: state.users.viewer,
-  }),
+  })),
 )(MePage);
