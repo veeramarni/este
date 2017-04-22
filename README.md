@@ -11,11 +11,9 @@
 
 > Starter kit for universal full–fledged React apps. One stack for browser, mobile, server.
 
-> You don't have to start with everything. Este is perfect even for plain static pages. You can gracefully add any platform later. Este mission is simple: **Help startups to deliver minimal valuable product asap with the state of the art real-time universal app stack**.
+> You don't have to start with everything. Este is perfect even for plain static pages. You can gracefully add any platform later. Este mission is simple: **Help startups to deliver minimum viable product asap with the state of the art real-time universal app stack**.
 
 > Pokud máte zájem o školení JavaScript, React.js, nebo Este.js, podívejte se na [javascript-skoleni.cz](https://javascript-skoleni.cz/).
-
-> **Contact me, if you are looking for a technical cofounder.**
 
 ## Techniques
 
@@ -96,6 +94,7 @@ React Native: [Getting Started](https://facebook.github.io/react-native/docs/get
 - `gulp messages-check` check missing and unused translations
 - `gulp messages-clear` remove unused translations
 - `gulp favicon` create universal favicon
+- `gulp prettier` prettify source code
 
 ## Production Tasks
 
